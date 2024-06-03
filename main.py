@@ -1,13 +1,18 @@
+from time import perf_counter
+
 from src.bbde import bbde
 from src.de import de, msr_de, tpa_de
 from src.commons import initialize_population
+from src.commons import timeit
 
-# wrapper na czas
+@timeit()
 def run(population: tuple, objective_function, de_function) -> tuple:
+    start = perf_counter()
     results = de_function(population, objective_function)
     individuals = [result[0] for result in results]
     scores = [result[1] for result in results]
-    return individuals, scores
+    end = perf_counter()
+    return individuals, scores, round(end - start, 2)
 
 def main():
     # parametry dla wszystkich
@@ -17,14 +22,14 @@ def main():
     normalized_population, denorm_population = initialize_population(POPULATION_SIZE, BOUNDS)
 
     # execution
-    individuals, scores = run(
+    individuals, scores, exec_time = run(
         denorm_population,
         OBJECTIVE_FUNCTION,
         de
     )
-
     # evaluation
-    print(scores)
+    # print(scores)
+    # print(f"{exec_time=}s")
 
     
 

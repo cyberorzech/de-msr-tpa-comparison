@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.stats import multivariate_normal
+from time import perf_counter
 
 def initialize_population(population_size, bounds):
     dimensions = len(bounds)
@@ -9,6 +10,19 @@ def initialize_population(population_size, bounds):
     bounds_difference = np.fabs(min_bound - max_bound)
     denorm_population = max_bound - bounds_difference * normalized_population
     return normalized_population, denorm_population
+
+def timeit():
+    def measure_time(func):
+        def wrapper(*args, **kwargs):
+            start = perf_counter()
+            result = func(*args, **kwargs)
+            stop = perf_counter()
+            print(f"Function: {func.__name__}, {(stop - start):.2f} seconds")
+            return result
+
+        return wrapper
+
+    return measure_time
 
 
 
