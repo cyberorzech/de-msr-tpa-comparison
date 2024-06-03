@@ -4,8 +4,6 @@ from scipy.stats import truncnorm
 from tqdm import tqdm
 from math import exp
 
-from src.gauss import sample_multivariate_truncated_gaussian
-
 def initialize_population(population_size, bounds):
     dimensions = len(bounds)
     normalized_population = np.random.rand(population_size, dimensions)
@@ -37,37 +35,9 @@ def bbde(population, objective_func, iterations=100, alternative_exp_offset = Tr
 
             # TUTAJ ROZNE WARIANTY TEGO MUTANTA
             # TODO zwykly DE
-            # indices = np.random.choice(popsize, 3, replace=False)
-            # while individual in indices:
-            #     indices = np.random.choice(popsize, 3, replace=False)
-            # r1, r2, r3 = population[indices]
-            # mutant_classic = r1 + F * (r2 - r3)
-            
-            # TODO zwykly BBDE
-            # HERE
-            #direction = r1 - r2
             sigma = abs(best_individual - individual)
-            # sigma = np.std(direction)  # Standard deviation of the difference for Gaussian noise scaling
-            
-            #mutant_bbde = best_individual + np.random.normal(0, sigma, size=best_individual.shape)
             midpoint = (best_individual + individual) / 2
-            mutant_bbde = np.random.normal(midpoint, sigma)  
-
-            #if random.uniform(0, 1) < 0.5:
-            #    mutant = mutant_classic
-            #else:
-            #    mutant = mutant_bbde                    
-
-            # TODO z MSR
-
-            # TODO z TPA
-
-            # opcjonalnie: z exp (papier strona 130)
-            # rand = random()                             # random real number between (0, 1)
-            # mutant = population[j] + exp(rand - exp_offset) * (r1 - r2)     # (2) local selection, exp(od -0.5 do 0.5), TUTAJ CHYBA WCHODZI MSR I TPA
-            # calkowicie nowy punkt, stworzony wg powyzszej reguly
-
-            mutant = mutant_bbde# dummy, delete later
+            mutant = np.random.normal(midpoint, sigma)
             
             mutant_result = objective_func(mutant)
             # jesli wartosc funkcji celu dla mutanta jest lepsza (mniejsza) niz aktualnie rozpatrywany punkt: podmiana punktow i aktualizacja wartosci w fitness 
@@ -86,7 +56,7 @@ def bbde(population, objective_func, iterations=100, alternative_exp_offset = Tr
 
 def main():
     POPULATION_SIZE = 20 # dwadziescia osobnikow, czyli par x y
-    BOUNDS = [(-10, 10)] * 2
+    BOUNDS = [(-10, 10)] * 100
     OBJECTIVE_FUNCTION = lambda x: sum(x**2)/len(x)
 
     normalized_population, denorm_population = initialize_population(POPULATION_SIZE, BOUNDS)
