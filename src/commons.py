@@ -2,8 +2,10 @@ import numpy as np
 from scipy.stats import multivariate_normal
 from time import perf_counter
 
+SEED = 123
 
 def initialize_population(population_size, bounds):
+    np.random.seed(seed=SEED)
     dimensions = len(bounds)
     normalized_population = np.random.rand(population_size, dimensions)
     # check if bounds are given in proper order
