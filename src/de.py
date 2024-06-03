@@ -47,6 +47,57 @@ def de(population, objective_func, iterations=100, alternative_exp_offset = True
         results.append((best_individual, fitness[best_index]))    
     return results
 
+def msr_de(population, objective_func, iterations=100, alternative_exp_offset = True):
+    popsize = len(population)
+    fitness = np.asarray([objective_func(ind) for ind in population])
+    best_index = np.argmin(fitness)
+    best_individual = population[best_index]
+    F = 0.8  # Initial mutation factor
+
+    # Track the success of each mutation
+    success_rates = []
+
+    results = []
+    for _ in tqdm(range(iterations)):
+        successes = 0  # Number of successful mutations in this iteration
+
+        for i in range(popsize):
+            # Select three random individuals, different from the target individual
+            indices = np.random.choice(popsize, 3, replace=False)
+            while i in indices:
+                indices = np.random.choice(popsize, 3, replace=False)
+            r1, r2, r3 = population[indices]
+
+            # Perform mutation using DE formula
+            mutant = r1 + F * (r2 - r3)
+            mutant_result = objective_func(mutant)
+            
+            # Selection step
+            if mutant_result < fitness[i]:
+                population[i] = mutant
+                fitness[i] = mutant_result
+                successes += 1
+
+                # Update best solution found
+                if mutant_result < fitness[best_index]:
+                    best_index = i
+                    best_individual = mutant
+
+        # Track the success rate of this generation
+        success_rate = successes / popsize
+        success_rates.append(success_rate)
+
+        # Median Success Rule to adjust F
+        if len(success_rates) > 1:  # Ensure there's enough data to calculate median
+            median_success = np.median(success_rates)
+            if median_success > 0.5:
+                F *= 1.1  # Increase F if more than half the mutations are successful
+            else:
+                F *= 0.9  # Decrease F otherwise
+
+        results.append((best_individual.copy(), fitness[best_index]))
+
+    return results
 
 def main():
     """
