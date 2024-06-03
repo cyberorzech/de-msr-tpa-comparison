@@ -8,9 +8,9 @@ from src.cost_functions import *
 
 
 @timeit()
-def run(population: tuple, objective_function, de_function) -> tuple:
+def run(population: tuple, objective_function, de_function, iterations) -> tuple:
     start = perf_counter()
-    results = de_function(population, objective_function)
+    results = de_function(population, objective_function, iterations)
     individuals = [result[0] for result in results]
     scores = [result[1] for result in results]
     end = perf_counter()
@@ -18,21 +18,22 @@ def run(population: tuple, objective_function, de_function) -> tuple:
 
 def main():
     # parametry dla wszystkich
-    POPULATION_SIZE = 20 # dwadziescia osobnikow, czyli par x y
+    POPULATION_SIZE = 10 # max
     BOUNDS = [(-10, 10)] * 2
-    objective_function = x_squared
+    objective_function = michalewicz
     normalized_population, denorm_population = initialize_population(POPULATION_SIZE, BOUNDS)
+    iterations = 10 # max
 
     # execution
     individuals, scores, exec_time = run(
         denorm_population,
         objective_function,
-        de
+        de,
+        iterations
     )
     # evaluation
-    # print(scores)
-    # print(f"{exec_time=}s")
-
+    # print(f"{sum(scores) / len(scores)}")
+    print(scores)
     
 
 if __name__ == "__main__":

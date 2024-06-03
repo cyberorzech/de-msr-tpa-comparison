@@ -28,8 +28,6 @@ def de(population, objective_func, iterations=100):
                 indices = np.random.choice(popsize, 3, replace=False)
             r1, r2, r3 = population[indices]
             mutant = r1 + F * (r2 - r3)
-
-
             
             mutant_result = objective_func(mutant)
             # jesli wartosc funkcji celu dla mutanta jest lepsza (mniejsza) niz aktualnie rozpatrywany punkt: podmiana punktow i aktualizacja wartosci w fitness 
