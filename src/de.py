@@ -6,8 +6,7 @@ from math import exp
 
 
 # problem minimalizacji (argmin)
-def de(population, objective_func, iterations=100, alternative_exp_offset = True):
-    exp_offset = 0.5 if alternative_exp_offset else 0.0
+def de(population, objective_func, iterations=100):
     population = population.copy()
     popsize = len(population)
 
@@ -18,7 +17,6 @@ def de(population, objective_func, iterations=100, alternative_exp_offset = True
     F = 0.8
     results = []
 
-    # for i in tqdm(range(iterations), leave=False, desc=f'BBDE alt - {alternative_exp_offset}'):
     for _ in range(iterations): # i to?
         for individual in range(len(population)):
             # WYBIERA DWOCH LOSOWYCH OSOBNIKOW
@@ -47,7 +45,7 @@ def de(population, objective_func, iterations=100, alternative_exp_offset = True
         results.append((best_individual, fitness[best_index]))    
     return results
 
-def msr_de(population, objective_func, iterations=100, alternative_exp_offset = True):
+def msr_de(population, objective_func, iterations=100):
     popsize = len(population)
     fitness = np.asarray([objective_func(ind) for ind in population])
     best_index = np.argmin(fitness)
@@ -99,7 +97,7 @@ def msr_de(population, objective_func, iterations=100, alternative_exp_offset = 
 
     return results
 
-def tpa_de(population, objective_func, iterations=100, alternative_exp_offset = True):
+def tpa_de(population, objective_func, iterations=100):
     popsize = len(population)
     fitness = np.asarray([objective_func(ind) for ind in population])
     best_index = np.argmin(fitness)
