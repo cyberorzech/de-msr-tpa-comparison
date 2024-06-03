@@ -55,6 +55,9 @@ def bbde(population, objective_func, iterations=100, alternative_exp_offset = Tr
 
 
 def main():
+    """
+    Example usage:
+
     POPULATION_SIZE = 20 # dwadziescia osobnikow, czyli par x y
     BOUNDS = [(-10, 10)] * 100
     OBJECTIVE_FUNCTION = lambda x: sum(x**2)/len(x)
@@ -66,6 +69,8 @@ def main():
     scores = [result[1] for result in results]
     
     print(f"{sum(scores) / len(scores)}")
+    """
+    raise NotImplementedError("Use as package")
     
     
 

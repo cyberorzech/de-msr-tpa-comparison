@@ -4,17 +4,10 @@ from scipy.stats import truncnorm
 from tqdm import tqdm
 from math import exp
 
-def initialize_population(population_size, bounds):
-    dimensions = len(bounds)
-    normalized_population = np.random.rand(population_size, dimensions)
-    # check if bounds are given in proper order
-    min_bound, max_bound = np.asarray(bounds).T
-    bounds_difference = np.fabs(min_bound - max_bound)
-    denorm_population = max_bound - bounds_difference * normalized_population
-    return normalized_population, denorm_population
+
 
 # problem minimalizacji (argmin)
-def bbde(population, objective_func, iterations=100, alternative_exp_offset = True):
+def de(population, objective_func, iterations=100, alternative_exp_offset = True):
     exp_offset = 0.5 if alternative_exp_offset else 0.0
     population = population.copy()
     popsize = len(population)
@@ -57,6 +50,9 @@ def bbde(population, objective_func, iterations=100, alternative_exp_offset = Tr
 
 
 def main():
+    """
+    Example usage:
+
     POPULATION_SIZE = 20 # dwadziescia osobnikow, czyli par x y
     BOUNDS = [(-10, 10)] * 100
     OBJECTIVE_FUNCTION = lambda x: sum(x**2)/len(x)
@@ -68,8 +64,9 @@ def main():
     scores = [result[1] for result in results]
     
     print(f"{sum(scores) / len(scores)}")
-    
-    
+    """
+    raise NotImplementedError("Use as package")
+
 
 if __name__ == "__main__":
     main()
