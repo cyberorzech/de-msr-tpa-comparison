@@ -1,5 +1,6 @@
 import numpy as np
 from random import random, choice
+from scipy.stats import truncnorm
 from tqdm import tqdm
 from math import exp
 
@@ -14,14 +15,15 @@ def initialize_population(population_size, bounds):
     return normalized_population, denorm_population
 
 # problem minimalizacji (argmin)
-def bbde(population, fobj, iterations=100, alternative_exp_offset = True):
+def bbde(population, objective_func, iterations=100, alternative_exp_offset = True):
     exp_offset = 0.5 if alternative_exp_offset else 0.0
     population = population.copy()
     popsize = len(population)
 
-    fitness = np.asarray([fobj(ind) for ind in population])
+    fitness = np.asarray([objective_func(ind) for ind in population])
     best_index = np.argmin(fitness)
-    best = population[best_index]
+    best_individual = population[best_index]
+    best_score = objective_func(best_individual)
     results = []
 
     # for i in tqdm(range(iterations), leave=False, desc=f'BBDE alt - {alternative_exp_offset}'):
@@ -35,7 +37,10 @@ def bbde(population, fobj, iterations=100, alternative_exp_offset = True):
             # TODO zwykly DE
 
             # TODO zwykly BBDE
-
+            mutant = truncnorm.rvs(
+                (best_individual + individual) / 2,
+                
+            )
             # TODO z MSR
 
             # TODO z TPA
@@ -46,7 +51,7 @@ def bbde(population, fobj, iterations=100, alternative_exp_offset = True):
             # calkowicie nowy punkt, stworzony wg powyzszej reguly
 
             mutant = r1 # dummy, delete later
-            mutant_result = fobj(mutant)
+            mutant_result = objective_func(mutant)
             # jesli wartosc funkcji celu dla mutanta jest lepsza (mniejsza) niz aktualnie rozpatrywany punkt: podmiana punktow i aktualizacja wartosci w fitness 
             # dodatkowo jesli jest najlepszy jak dotad to best index tez aktualizowany
             if mutant_result >= fitness[individual]:
@@ -55,9 +60,9 @@ def bbde(population, fobj, iterations=100, alternative_exp_offset = True):
             population[individual] = mutant
             if mutant_result < fitness[best_index]:
                 best_index = individual
-                best = mutant
+                best_individual = mutant
         # na koniec z tej calej populacji i podmianek mutantow lub braku podmianek wylania sie najlepszy punkt, ktory trafia do results
-        results.append((best, fitness[best_index]))    
+        results.append((best_individual, fitness[best_index]))    
     return results
 
 
