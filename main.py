@@ -4,6 +4,8 @@ from src.bbde import bbde
 from src.de import de, msr_de, tpa_de
 from src.commons import initialize_population
 from src.commons import timeit
+from src.cost_functions import *
+
 
 @timeit()
 def run(population: tuple, objective_function, de_function) -> tuple:
@@ -18,13 +20,13 @@ def main():
     # parametry dla wszystkich
     POPULATION_SIZE = 20 # dwadziescia osobnikow, czyli par x y
     BOUNDS = [(-10, 10)] * 2
-    OBJECTIVE_FUNCTION = lambda x: sum(x**2)/len(x)
+    objective_function = x_squared
     normalized_population, denorm_population = initialize_population(POPULATION_SIZE, BOUNDS)
 
     # execution
     individuals, scores, exec_time = run(
         denorm_population,
-        OBJECTIVE_FUNCTION,
+        objective_function,
         de
     )
     # evaluation

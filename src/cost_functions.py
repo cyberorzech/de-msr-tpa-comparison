@@ -1,5 +1,7 @@
 import numpy as np
 
+def x_squared(x):
+    return sum(x**2) / len(x)
 
 def rosenbrock(x):
     z_shift = 0
