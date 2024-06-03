@@ -1,7 +1,9 @@
 import numpy as np
 
+
 def objective_function(x):
     return x**2
+
 
 def median_success_rule(initial_step_size, iterations, success_threshold=0.5):
     current_position = np.random.randn()
@@ -23,6 +25,7 @@ def median_success_rule(initial_step_size, iterations, success_threshold=0.5):
 
         print(f"Current position: {current_position}, Step size: {step_size}")
 
+
 def two_point_adaptation(initial_step_size, iterations):
     current_position = np.random.randn()
     step_sizes = [initial_step_size, initial_step_size * 1.2]
@@ -39,6 +42,7 @@ def two_point_adaptation(initial_step_size, iterations):
         step_sizes[1 - best_index] *= 0.9
 
         print(f"Current position: {current_position}, Best step size: {best_step_size}")
+
 
 median_success_rule(0.1, 20)
 two_point_adaptation(0.1, 20)

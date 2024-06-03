@@ -17,20 +17,22 @@ def de(population, objective_func, iterations=100):
     F = 0.8
     results = []
 
-    for _ in range(iterations): # i to?
+    for _ in range(iterations):  # i to?
         for individual in range(len(population)):
             # WYBIERA DWOCH LOSOWYCH OSOBNIKOW
             available_population_indexes = [idx for idx in range(popsize)]  # r1 != r2
-            r1, r2 = population[np.random.choice(available_population_indexes, 2, replace=False)] # get two random individuals
+            r1, r2 = population[
+                np.random.choice(available_population_indexes, 2, replace=False)
+            ]  # get two random individuals
 
             indices = np.random.choice(popsize, 3, replace=False)
             while individual in indices:
                 indices = np.random.choice(popsize, 3, replace=False)
             r1, r2, r3 = population[indices]
             mutant = r1 + F * (r2 - r3)
-            
+
             mutant_result = objective_func(mutant)
-            # jesli wartosc funkcji celu dla mutanta jest lepsza (mniejsza) niz aktualnie rozpatrywany punkt: podmiana punktow i aktualizacja wartosci w fitness 
+            # jesli wartosc funkcji celu dla mutanta jest lepsza (mniejsza) niz aktualnie rozpatrywany punkt: podmiana punktow i aktualizacja wartosci w fitness
             # dodatkowo jesli jest najlepszy jak dotad to best index tez aktualizowany
             if mutant_result >= fitness[individual]:
                 continue
@@ -40,8 +42,9 @@ def de(population, objective_func, iterations=100):
                 best_index = individual
                 best_individual = mutant
         # na koniec z tej calej populacji i podmianek mutantow lub braku podmianek wylania sie najlepszy punkt, ktory trafia do results
-        results.append((best_individual, fitness[best_index]))    
+        results.append((best_individual, fitness[best_index]))
     return results
+
 
 def msr_de(population, objective_func, iterations=100):
     popsize = len(population)
@@ -67,7 +70,7 @@ def msr_de(population, objective_func, iterations=100):
             # Perform mutation using DE formula
             mutant = r1 + F * (r2 - r3)
             mutant_result = objective_func(mutant)
-            
+
             # Selection step
             if mutant_result < fitness[i]:
                 population[i] = mutant
@@ -95,25 +98,30 @@ def msr_de(population, objective_func, iterations=100):
 
     return results
 
+
 def tpa_de(population, objective_func, iterations=100):
     popsize = len(population)
     fitness = np.asarray([objective_func(ind) for ind in population])
     best_index = np.argmin(fitness)
-    
+
     # Initialize two different mutation factors for TPA
     F1, F2 = 0.5, 0.8
     # Track performance history for each F
     performance_F1, performance_F2 = [], []
-    
+
     results = []
     for _ in tqdm(range(iterations)):
         # For each generation, select which F to use based on past performance
-        if np.mean(performance_F1[-10:]) > np.mean(performance_F2[-10:]) if len(performance_F1) >= 10 else True:
+        if (
+            np.mean(performance_F1[-10:]) > np.mean(performance_F2[-10:])
+            if len(performance_F1) >= 10
+            else True
+        ):
             F = F1
-            current_F = 'F1'
+            current_F = "F1"
         else:
             F = F2
-            current_F = 'F2'
+            current_F = "F2"
 
         for i in range(popsize):
             indices = np.random.choice(popsize, 3, replace=False)
@@ -124,7 +132,7 @@ def tpa_de(population, objective_func, iterations=100):
             # Mutation
             mutant = r1 + F * (r2 - r3)
             mutant_result = objective_func(mutant)
-            
+
             # Selection
             if mutant_result < fitness[i]:
                 population[i] = mutant
@@ -135,7 +143,7 @@ def tpa_de(population, objective_func, iterations=100):
                     best_index = i
 
                 # Track successful application of F
-                if current_F == 'F1':
+                if current_F == "F1":
                     performance_F1.append(mutant_result)
                 else:
                     performance_F2.append(mutant_result)
@@ -143,6 +151,7 @@ def tpa_de(population, objective_func, iterations=100):
         results.append((population[best_index].copy(), fitness[best_index]))
 
     return results
+
 
 def main():
     """
@@ -157,7 +166,7 @@ def main():
     # evaluation
     individuals = [result[0] for result in results]
     scores = [result[1] for result in results]
-    
+
     print(f"{sum(scores) / len(scores)}")
     """
     raise NotImplementedError("Use as package")

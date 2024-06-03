@@ -6,7 +6,7 @@ from math import exp
 
 
 # problem minimalizacji (argmin)
-def bbde(population, objective_func, iterations=100, alternative_exp_offset = True):
+def bbde(population, objective_func, iterations=100, alternative_exp_offset=True):
     exp_offset = 0.5 if alternative_exp_offset else 0.0
     population = population.copy()
     popsize = len(population)
@@ -19,20 +19,22 @@ def bbde(population, objective_func, iterations=100, alternative_exp_offset = Tr
     results = []
 
     # for i in tqdm(range(iterations), leave=False, desc=f'BBDE alt - {alternative_exp_offset}'):
-    for _ in range(iterations): # i to?
+    for _ in range(iterations):  # i to?
         for individual in range(len(population)):
             # WYBIERA DWOCH LOSOWYCH OSOBNIKOW
             available_population_indexes = [idx for idx in range(popsize)]  # r1 != r2
-            r1, r2 = population[np.random.choice(available_population_indexes, 2, replace=False)] # get two random individuals
+            r1, r2 = population[
+                np.random.choice(available_population_indexes, 2, replace=False)
+            ]  # get two random individuals
 
             # TUTAJ ROZNE WARIANTY TEGO MUTANTA
             # TODO zwykly DE
             sigma = abs(best_individual - individual)
             midpoint = (best_individual + individual) / 2
             mutant = np.random.normal(midpoint, sigma)
-            
+
             mutant_result = objective_func(mutant)
-            # jesli wartosc funkcji celu dla mutanta jest lepsza (mniejsza) niz aktualnie rozpatrywany punkt: podmiana punktow i aktualizacja wartosci w fitness 
+            # jesli wartosc funkcji celu dla mutanta jest lepsza (mniejsza) niz aktualnie rozpatrywany punkt: podmiana punktow i aktualizacja wartosci w fitness
             # dodatkowo jesli jest najlepszy jak dotad to best index tez aktualizowany
             if mutant_result >= fitness[individual]:
                 continue
@@ -42,7 +44,7 @@ def bbde(population, objective_func, iterations=100, alternative_exp_offset = Tr
                 best_index = individual
                 best_individual = mutant
         # na koniec z tej calej populacji i podmianek mutantow lub braku podmianek wylania sie najlepszy punkt, ktory trafia do results
-        results.append((best_individual, fitness[best_index]))    
+        results.append((best_individual, fitness[best_index]))
     return results
 
 
@@ -59,12 +61,11 @@ def main():
     # evaluation
     individuals = [result[0] for result in results]
     scores = [result[1] for result in results]
-    
+
     print(f"{sum(scores) / len(scores)}")
     """
     raise NotImplementedError("Use as package")
-    
-    
+
 
 if __name__ == "__main__":
     main()

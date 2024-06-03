@@ -2,6 +2,7 @@ import numpy as np
 from scipy.stats import multivariate_normal
 from time import perf_counter
 
+
 def initialize_population(population_size, bounds):
     dimensions = len(bounds)
     normalized_population = np.random.rand(population_size, dimensions)
@@ -10,6 +11,7 @@ def initialize_population(population_size, bounds):
     bounds_difference = np.fabs(min_bound - max_bound)
     denorm_population = max_bound - bounds_difference * normalized_population
     return normalized_population, denorm_population
+
 
 def timeit():
     def measure_time(func):
@@ -25,9 +27,9 @@ def timeit():
     return measure_time
 
 
-
-
-def sample_multivariate_truncated_gaussian(means, cov_matrix, lower_bounds, upper_bounds, size=1):
+def sample_multivariate_truncated_gaussian(
+    means, cov_matrix, lower_bounds, upper_bounds, size=1
+):
     """
     Sample from a multivariate Gaussian and manually truncate the results.
     :param means: Array of means for each dimension.
@@ -38,15 +40,18 @@ def sample_multivariate_truncated_gaussian(means, cov_matrix, lower_bounds, uppe
     :return: Array of truncated samples.
     """
     # Ensure bounds, means, and covariance matrix have compatible shapes
-    assert len(means) == len(lower_bounds) == len(upper_bounds) == len(cov_matrix), "Dimension mismatch"
+    assert (
+        len(means) == len(lower_bounds) == len(upper_bounds) == len(cov_matrix)
+    ), "Dimension mismatch"
 
     # Sample from a multivariate normal distribution
     samples = multivariate_normal.rvs(mean=means, cov=cov_matrix, size=size)
-    
+
     # Apply truncation
     truncated_samples = np.clip(samples, lower_bounds, upper_bounds)
-    
+
     return truncated_samples
+
 
 if __name__ == "__main__":
     raise NotImplementedError("Use as package")
