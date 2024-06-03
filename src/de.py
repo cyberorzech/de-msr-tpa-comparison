@@ -99,6 +99,55 @@ def msr_de(population, objective_func, iterations=100, alternative_exp_offset = 
 
     return results
 
+def tpa_de(population, objective_func, iterations=100, alternative_exp_offset = True):
+    popsize = len(population)
+    fitness = np.asarray([objective_func(ind) for ind in population])
+    best_index = np.argmin(fitness)
+    
+    # Initialize two different mutation factors for TPA
+    F1, F2 = 0.5, 0.8
+    # Track performance history for each F
+    performance_F1, performance_F2 = [], []
+    
+    results = []
+    for _ in tqdm(range(iterations)):
+        # For each generation, select which F to use based on past performance
+        if np.mean(performance_F1[-10:]) > np.mean(performance_F2[-10:]) if len(performance_F1) >= 10 else True:
+            F = F1
+            current_F = 'F1'
+        else:
+            F = F2
+            current_F = 'F2'
+
+        for i in range(popsize):
+            indices = np.random.choice(popsize, 3, replace=False)
+            while i in indices:
+                indices = np.random.choice(popsize, 3, replace=False)
+            r1, r2, r3 = population[indices]
+
+            # Mutation
+            mutant = r1 + F * (r2 - r3)
+            mutant_result = objective_func(mutant)
+            
+            # Selection
+            if mutant_result < fitness[i]:
+                population[i] = mutant
+                fitness[i] = mutant_result
+
+                # Update best solution found
+                if mutant_result < fitness[best_index]:
+                    best_index = i
+
+                # Track successful application of F
+                if current_F == 'F1':
+                    performance_F1.append(mutant_result)
+                else:
+                    performance_F2.append(mutant_result)
+
+        results.append((population[best_index].copy(), fitness[best_index]))
+
+    return results
+
 def main():
     """
     Example usage:

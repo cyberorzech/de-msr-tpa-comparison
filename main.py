@@ -1,5 +1,5 @@
 from src.bbde import bbde
-from src.de import de, msr_de
+from src.de import de, msr_de, tpa_de
 from src.commons import initialize_population
 
 def main():
@@ -9,7 +9,7 @@ def main():
 
     normalized_population, denorm_population = initialize_population(POPULATION_SIZE, BOUNDS)
     # evaluation
-    results = msr_de(denorm_population, OBJECTIVE_FUNCTION)
+    results = tpa_de(denorm_population, OBJECTIVE_FUNCTION)
     individuals = [result[0] for result in results]
     scores = [result[1] for result in results]
     
