@@ -25,40 +25,39 @@ def bbde(population, fobj, iterations=100, alternative_exp_offset = True):
     results = []
 
     # for i in tqdm(range(iterations), leave=False, desc=f'BBDE alt - {alternative_exp_offset}'):
-    for _ in range(iterations): # i to?
-
-
-
-        # ========
-        for j in range(len(population)): # j to osobnik?
-
+    for _ in tqdm(range(iterations)): # i to?
+        for individual in range(len(population)):
             # WYBIERA DWOCH LOSOWYCH OSOBNIKOW
-            random_indexes = [idx for idx in range(popsize)]  # r1 != r2   # czy to jest zle? nei ma losowosci
-            r1, r2 = population[np.random.choice(random_indexes, 2, replace=False)]
+            available_population_indexes = [idx for idx in range(popsize)]  # r1 != r2
+            r1, r2 = population[np.random.choice(available_population_indexes, 2, replace=False)] # get two random individuals
 
-            rand = random()                             # random real number between (0, 1)
-            mutant = population[j] + exp(rand - exp_offset) * (r1 - r2)     # (2) local selection, exp(od -0.5 do 0.5), TUTAJ CHYBA WCHODZI MSR I TPA
+            # TUTAJ ROZNE WARIANTY TEGO MUTANTA
+            # TODO zwykly DE
+
+            # TODO zwykly BBDE
+
+            # TODO z MSR
+
+            # TODO z TPA
+
+            # opcjonalnie: z exp (papier strona 130)
+            # rand = random()                             # random real number between (0, 1)
+            # mutant = population[j] + exp(rand - exp_offset) * (r1 - r2)     # (2) local selection, exp(od -0.5 do 0.5), TUTAJ CHYBA WCHODZI MSR I TPA
             # calkowicie nowy punkt, stworzony wg powyzszej reguly
 
-
-            trial = mutant                              # CR = 1 (1)
-
-            f = fobj(trial)
-
+            mutant = r1 # dummy, delete later
+            mutant_result = fobj(mutant)
             # jesli wartosc funkcji celu dla mutanta jest lepsza (mniejsza) niz aktualnie rozpatrywany punkt: podmiana punktow i aktualizacja wartosci w fitness 
             # dodatkowo jesli jest najlepszy jak dotad to best index tez aktualizowany
-            if f < fitness[j]:
-                fitness[j] = f
-                population[j] = trial
-                if f < fitness[best_index]:
-                    best_index = j
-                    best = trial
+            if mutant_result >= fitness[individual]:
+                continue
+            fitness[individual] = mutant_result
+            population[individual] = mutant
+            if mutant_result < fitness[best_index]:
+                best_index = individual
+                best = mutant
         # na koniec z tej calej populacji i podmianek mutantow lub braku podmianek wylania sie najlepszy punkt, ktory trafia do results
-        results.append((best, fitness[best_index]))
-
-    
-    
-    
+        results.append((best, fitness[best_index]))    
     return results
 
 
