@@ -1,5 +1,7 @@
 import numpy as np
 from random import random, choice
+from tqdm import tqdm
+from math import exp
 
 
 def initialize_population(population_size, bounds):
@@ -11,65 +13,65 @@ def initialize_population(population_size, bounds):
     denorm_population = max_bound - bounds_difference * normalized_population
     return normalized_population, denorm_population
 
+# problem minimalizacji (argmin)
+def bbde(population, fobj, iterations=100, alternative_exp_offset = True):
+    exp_offset = 0.5 if alternative_exp_offset else 0.0
+    population = population.copy()
+    popsize = len(population)
 
-def adaptive_bbde(fobj, pop, its=1000):
-    popsize = len(pop)
-    population = np.copy(pop)
-    # Ensure fitness is calculated as a list of scalar values
-    fitness = np.array([fobj(ind) for ind in population])
+    fitness = np.asarray([fobj(ind) for ind in population])
     best_index = np.argmin(fitness)
     best = population[best_index]
     results = []
 
-    F1, F2 = 0.5, 0.8  # Initial scale factors
-    success_rates = []
+    # for i in tqdm(range(iterations), leave=False, desc=f'BBDE alt - {alternative_exp_offset}'):
+    for _ in range(iterations): # i to?
 
-    for i in range(its):
-        successes = 0
-        for j in range(popsize):
-            idxs = [idx for idx in range(popsize) if idx != j]
-            a, b, c = population[np.random.choice(idxs, 3, replace=False)]
-            
-            F = F1 if random() > 0.5 else F2  # Two-point adaptation
-            
-            mutant = a + F * (b - c)
-            trial = np.array([mutant[k] if random() < 0.9 else population[j][k] for k in range(len(mutant))])
-            
-            new_fitness = fobj(trial)
-            # Ensure scalar comparisons for fitness
-            if new_fitness < fitness[j]:
-                fitness[j] = new_fitness
+
+
+        # ========
+        for j in range(len(population)): # j to osobnik?
+
+            # WYBIERA DWOCH LOSOWYCH OSOBNIKOW
+            random_indexes = [idx for idx in range(popsize)]  # r1 != r2   # czy to jest zle? nei ma losowosci
+            r1, r2 = population[np.random.choice(random_indexes, 2, replace=False)]
+
+            rand = random()                             # random real number between (0, 1)
+            mutant = population[j] + exp(rand - exp_offset) * (r1 - r2)     # (2) local selection, exp(od -0.5 do 0.5), TUTAJ CHYBA WCHODZI MSR I TPA
+            # calkowicie nowy punkt, stworzony wg powyzszej reguly
+
+
+            trial = mutant                              # CR = 1 (1)
+
+            f = fobj(trial)
+
+            # jesli wartosc funkcji celu dla mutanta jest lepsza (mniejsza) niz aktualnie rozpatrywany punkt: podmiana punktow i aktualizacja wartosci w fitness 
+            # dodatkowo jesli jest najlepszy jak dotad to best index tez aktualizowany
+            if f < fitness[j]:
+                fitness[j] = f
                 population[j] = trial
-                if new_fitness < fitness[best_index]:
+                if f < fitness[best_index]:
                     best_index = j
                     best = trial
-                successes += 1
+        # na koniec z tej calej populacji i podmianek mutantow lub braku podmianek wylania sie najlepszy punkt, ktory trafia do results
+        results.append((best, fitness[best_index]))
 
-        success_rates.append(successes / popsize)
-        results.append((best.copy(), fitness[best_index]))
-
-        # Median Success Rule for scale factor adaptation
-        median_success = np.median(success_rates)
-        if median_success > 0.5:
-            F1 *= 1.1
-            F2 *= 1.1
-        else:
-            F1 *= 0.9
-            F2 *= 0.9
-
+    
+    
+    
     return results
 
 
-
-
-
 def main():
-    population_size = 20
-    bounds = [(-10, 10)] * 10
-    normalized_population, denorm_population = initialize_population(population_size, bounds)
-    fobj = lambda x: x**2
-    results = adaptive_bbde(fobj, normalized_population)
+    POPULATION_SIZE = 20 # dwadziescia osobnikow, czyli par x y
+    BOUNDS = [(-10, 10)] * 2
+    OBJECTIVE_FUNCTION = lambda x: sum(x**2)/len(x)
+
+    normalized_population, denorm_population = initialize_population(POPULATION_SIZE, BOUNDS)
+    results = bbde(denorm_population, OBJECTIVE_FUNCTION)
     print(results)
+    
+    
 
 if __name__ == "__main__":
     main()
