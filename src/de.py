@@ -5,7 +5,6 @@ from tqdm import tqdm
 from math import exp
 
 
-
 # problem minimalizacji (argmin)
 def de(population, objective_func, iterations=100, alternative_exp_offset = True):
     exp_offset = 0.5 if alternative_exp_offset else 0.0

@@ -4,14 +4,6 @@ from scipy.stats import truncnorm
 from tqdm import tqdm
 from math import exp
 
-def initialize_population(population_size, bounds):
-    dimensions = len(bounds)
-    normalized_population = np.random.rand(population_size, dimensions)
-    # check if bounds are given in proper order
-    min_bound, max_bound = np.asarray(bounds).T
-    bounds_difference = np.fabs(min_bound - max_bound)
-    denorm_population = max_bound - bounds_difference * normalized_population
-    return normalized_population, denorm_population
 
 # problem minimalizacji (argmin)
 def bbde(population, objective_func, iterations=100, alternative_exp_offset = True):
