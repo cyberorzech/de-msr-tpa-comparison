@@ -4,6 +4,7 @@ from time import perf_counter
 
 SEED = 123
 
+
 def initialize_population(population_size, bounds):
     np.random.seed(seed=SEED)
     dimensions = len(bounds)
@@ -30,7 +31,7 @@ def timeit():
 
 
 def sample_multivariate_truncated_gaussian(
-    means, cov_matrix, lower_bounds, upper_bounds, size=1
+        means, cov_matrix, lower_bounds, upper_bounds, size=1
 ):
     """
     Sample from a multivariate Gaussian and manually truncate the results.
@@ -43,7 +44,7 @@ def sample_multivariate_truncated_gaussian(
     """
     # Ensure bounds, means, and covariance matrix have compatible shapes
     assert (
-        len(means) == len(lower_bounds) == len(upper_bounds) == len(cov_matrix)
+            len(means) == len(lower_bounds) == len(upper_bounds) == len(cov_matrix)
     ), "Dimension mismatch"
 
     # Sample from a multivariate normal distribution

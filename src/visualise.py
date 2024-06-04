@@ -46,20 +46,25 @@
 
 import matplotlib.pyplot as plt
 import warnings
+import numpy as np
 
 FONTSIZE = 18
+
 
 def plot(scores_list: list, global_minimum: float, title: str):
     # Number of iterations is assumed to be consistent across all score lists
     iterations = list(range(1, len(scores_list[0]) + 1))
 
+    average_scores = np.mean(scores_list, axis=0)
+
     # Create the plot for linear scale
     plt.figure(figsize=(12, 6))
     colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k']  # Extend colors if more than 7 lists
     for scores, color in zip(scores_list, colors):
-        plt.plot(iterations, scores, marker="o", linestyle="-", color=color, label=f"Scores {colors.index(color)+1}")
-    
-    plt.axhline(y=global_minimum, color="k", linestyle="--", label="Global Minimum ({})".format(global_minimum))
+        plt.plot(iterations, scores, marker="o", linestyle="-", linewidth=0.8, color=color, label=f"Scores {colors.index(color)+1}")
+
+    plt.plot(iterations, average_scores, marker="o", linestyle="--", linewidth=0.8, color="orange", label="Average Scores")
+    plt.axhline(y=global_minimum, color="k", linestyle="--", linewidth=0.8, label="Global Minimum ({})".format(global_minimum))
 
     # Adding labels and title
     plt.xlabel("Iteration", fontsize=FONTSIZE)
@@ -77,9 +82,10 @@ def plot(scores_list: list, global_minimum: float, title: str):
     # Create the plot for log scale
     plt.figure(figsize=(12, 6))
     for scores, color in zip(scores_list, colors):
-        plt.plot(iterations, scores, marker="o", linestyle="-", color=color, label=f"Experiment {colors.index(color)+1}")
-    
-    plt.axhline(y=global_minimum, color="k", linestyle="--", label="Global Minimum ({})".format(global_minimum))
+        plt.plot(iterations, scores, marker="o", linestyle="-", linewidth=0.8, color=color, label=f"Experiment {colors.index(color)+1}")
+
+    plt.plot(iterations, average_scores, marker="o", linestyle="--", linewidth=0.8, color="orange", label="Average Scores")
+    plt.axhline(y=global_minimum, color="k", linestyle="--", linewidth=0.8, label="Global Minimum ({})".format(global_minimum))
 
     # Adding labels and title
     plt.xlabel("Iteration", fontsize=FONTSIZE)

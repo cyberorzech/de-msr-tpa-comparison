@@ -48,6 +48,14 @@ def bbde(population, objective_func, iterations=100, alternative_exp_offset=True
     return results
 
 
+def bbde_step(population, objective_func, best_index, fittness):
+    popsize = len(population)
+    population = population.copy()
+
+    best_individual = population[best_index]
+
+
+
 def main():
     """
     Example usage:

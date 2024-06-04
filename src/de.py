@@ -14,17 +14,12 @@ def de(population, objective_func, iterations=100):
     best_index = np.argmin(fitness)
     best_individual = population[best_index]
     best_score = objective_func(best_individual)
-    F = 0.8
+    F = 0.5
     results = []
 
     for _ in range(iterations):  # i to?
         for individual in range(len(population)):
             # WYBIERA DWOCH LOSOWYCH OSOBNIKOW
-            available_population_indexes = [idx for idx in range(popsize)]  # r1 != r2
-            r1, r2 = population[
-                np.random.choice(available_population_indexes, 2, replace=False)
-            ]  # get two random individuals
-
             indices = np.random.choice(popsize, 3, replace=False)
             while individual in indices:
                 indices = np.random.choice(popsize, 3, replace=False)
@@ -57,7 +52,7 @@ def msr_de(population, objective_func, iterations=100):
     success_rates = []
 
     results = []
-    for _ in tqdm(range(iterations)):
+    for _ in range(iterations):
         successes = 0  # Number of successful mutations in this iteration
 
         for i in range(popsize):

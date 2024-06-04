@@ -6,6 +6,7 @@ from math import pi
 
 from src.bbde import bbde
 from src.de import de, msr_de, tpa_de
+from src.hybrid_de import hybrid_msr, hybrid_tpa
 from src.commons import initialize_population
 from src.commons import timeit
 from src.cost_functions import *
@@ -44,19 +45,22 @@ def main():
     MINIMAL_POPULATION = 10
     MAXIMAL_POPULATION = 131
     POPULATION_INTERVAL = 30
-    ITERATIONS = 200
-    REPEATS = 5
-    DIMENSIONS = 2
+    ITERATIONS = 20
+    REPEATS = 20
+    DIMENSIONS = 10
     bounds = {
         "rosenbrock": [(-5, 10)] * DIMENSIONS,
         "levy": [(-10, 10)] * DIMENSIONS,
         "michalewicz": [(0, pi)] * DIMENSIONS,
         "bonachevsky": [(-100, 100)] * DIMENSIONS
     }
+
     print(f"Case 1: {datetime.now().__str__()}")
     for population_size in tqdm(range(MINIMAL_POPULATION, MAXIMAL_POPULATION, POPULATION_INTERVAL), desc="Population size", leave=False):
+    #for population_size in range(MINIMAL_POPULATION, MAXIMAL_POPULATION, POPULATION_INTERVAL):
         # rosenbrock
-        normalized_population, denorm_population = initialize_population(
+        print(f"Iteration for population size: f'{population_size}'")
+        initial_normalized_population, initial_denorm_population = initialize_population(
             population_size, 
             bounds["rosenbrock"]
         )
@@ -64,11 +68,13 @@ def main():
         data_fragments = list()
         scores_list = list()
         for repetition in range(REPEATS):
+            denorm_population = np.copy(initial_denorm_population)
+
             individuals, scores, exec_time = run(
                 population=denorm_population,
-                objective_function=rosenbrock,
-                de_function=bbde,
-                iterations=ITERATIONS
+                objective_function=levy,
+                de_function=hybrid_msr,
+                iterations=100
             )
             repetition_data = pd.DataFrame({
                 "repetition": [repetition] * len(scores),
@@ -78,12 +84,19 @@ def main():
             data_fragments.append(repetition_data)
             scores_list.append(scores)
         results = pd.concat(data_fragments, ignore_index=True)
+
         results.to_csv(f"./csv/{title}.csv")
         plot(
             scores_list=scores_list,
             global_minimum=0,
             title=title
         )
+
+        all_scores = np.concatenate(scores_list)
+        min_value = np.min(all_scores)
+        avg_value = np.mean(all_scores)
+
+        print('Average score = ', avg_value, 'Minimum score = ', min_value)
 
 
         
