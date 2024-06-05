@@ -42,9 +42,9 @@ def main():
 
 
     # CASE 1
-    MINIMAL_POPULATION = 10
-    MAXIMAL_POPULATION = 131
-    POPULATION_INTERVAL = 30
+    MINIMAL_POPULATION = 5
+    MAXIMAL_POPULATION = 40
+    POPULATION_INTERVAL = 5
     ITERATIONS = 20
     REPEATS = 20
     DIMENSIONS = 10
@@ -73,8 +73,8 @@ def main():
             individuals, scores, exec_time = run(
                 population=denorm_population,
                 objective_function=levy,
-                de_function=hybrid_msr,
-                iterations=100
+                de_function=hybrid_tpa,
+                iterations=500
             )
             repetition_data = pd.DataFrame({
                 "repetition": [repetition] * len(scores),

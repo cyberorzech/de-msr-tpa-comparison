@@ -1,3 +1,4 @@
+import math
 import numpy as np
 
 
@@ -37,3 +38,7 @@ def bonachevsky(x):
         - 0.4 * np.cos(4 * np.pi * x2)
         + 0.7
     )
+
+
+def eason(x):
+    return -(np.cos(x[0])*np.cos(x[1]))*np.exp(-(x[0]-math.pi)**2-(x[1]-math.pi)**2)

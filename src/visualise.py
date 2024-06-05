@@ -103,6 +103,58 @@ def plot(scores_list: list, global_minimum: float, title: str):
     plt.savefig(f"./img/{title}_log.png")
     plt.close()
 
+
+def plot_average_scores(scores_list, obj_function, title):
+    plt.figure(figsize=(10, 6))
+    markers = ['o', 'v', 's', 'P', '*', 'D', 'X', 'd']
+    for i, (de_type, avg_scores) in enumerate(scores_list):
+        plt.plot(avg_scores, marker=markers[i % len(markers)], label=de_type)
+
+    plt.title(f"Average Scores of DE Algorithms on {obj_function}")
+    plt.xlabel('Iteration')
+    plt.ylabel('Average Score')
+    plt.legend()
+    plt.grid(True)
+    plt.savefig(f"./img/{title}_avg.png")
+    plt.yscale('log')
+    plt.legend()
+    plt.grid(True)
+    plt.savefig(f"./img/{title}_avg_log.png")
+    plt.close()
+
+
+def plot_best_scores(best_scores_list, obj_function, title):
+    labels, values = zip(*best_scores_list)
+    plt.figure(figsize=(10, 6))
+    plt.bar(labels, values, color='skyblue')
+
+    plt.title(f"Best Minimal Scores of DE Algorithms on {obj_function}")
+    plt.xlabel('DE Type')
+    plt.ylabel('Best Minimal Score')
+    plt.xticks(rotation=0)
+    plt.grid(axis='y')
+    plt.savefig(f"./img/{title}_best.png")
+    plt.yscale('log')
+    plt.savefig(f"./img/{title}_best_log.png")
+    plt.close()
+
+
+def plot_execution_times(exec_time_list, obj_function, title):
+    de_types = [item[0] for item in exec_time_list]
+    avg_exec_times = [item[1] for item in exec_time_list]
+
+    plt.figure(figsize=(10, 6))
+    plt.bar(de_types, avg_exec_times, color='skyblue')
+
+    plt.title(f"Average Execution Time of DE Algorithms on {obj_function}")
+    plt.xlabel('DE Type')
+    plt.ylabel('Average Execution Time (seconds)')
+    plt.xticks(rotation=0)
+    plt.grid(axis='y')
+    plt.savefig(f"./img/{title}_times.png")
+    plt.close()
+
+
 if __name__ == "__main__":
     # Example usage with dummy data
     scores_list = [
