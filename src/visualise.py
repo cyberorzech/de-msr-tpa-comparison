@@ -1,49 +1,3 @@
-# import matplotlib.pyplot as plt
-# import warnings
-
-# FONTSIZE = 18
-
-
-# def plot(scores: list, iterations: list, global_minimum: int, title: str):
-#     # Known global minimum for the problem
-#     global_minimum = -1
-
-#     # Number of iterations
-#     iterations = list(range(1, len(scores) + 1))
-
-#     # Create the plot
-#     plt.figure(figsize=(12, 6))
-#     plt.plot(iterations, scores, marker="o", linestyle="-", color="b", label="Scores")
-#     plt.axhline(
-#         y=global_minimum, color="r", linestyle="--", label="Global Minimum (-1)"
-#     )
-
-#     # Adding labels and title
-#     plt.xlabel("Iteration", fontsize=FONTSIZE)
-#     plt.ylabel("Score", fontsize=FONTSIZE)
-#     plt.xticks(fontsize=FONTSIZE)
-#     plt.yticks(fontsize=FONTSIZE)
-#     # plt.title('Convergence of Scores to Global Minimum')
-#     plt.legend()
-
-#     # Show the grid
-#     with warnings.catch_warnings():
-#         warnings.simplefilter("ignore")
-#         # Linear Y axe
-#         plt.grid(True)
-#         plt.savefig(f"./img/{title}.png")
-#         plt.close()
-#         # Log Y axe
-#         plt.yscale("log")
-#         plt.savefig(f"./img/{title}_log.png")
-#         plt.close()
-
-
-# if __name__ == "__main__":
-#     raise NotImplementedError()
-
-
-
 import matplotlib.pyplot as plt
 import warnings
 import numpy as np
@@ -152,6 +106,25 @@ def plot_execution_times(exec_time_list, obj_function, title):
     plt.xticks(rotation=0)
     plt.grid(axis='y')
     plt.savefig(f"./img/{title}_times.png")
+    plt.close()
+
+
+def plot_best_scores_each_iteration(scores_list, obj_function, title):
+    plt.figure(figsize=(10, 6))
+    markers = ['o', 'v', 's', 'P', '*', 'D', 'X', 'd']
+    for i, (de_type, best_scores) in enumerate(scores_list):
+        plt.plot(best_scores, marker=markers[i % len(markers)], label=de_type)
+
+    plt.title(f"Best Scores per Iteration of DE Algorithms on {obj_function}")
+    plt.xlabel('Iteration')
+    plt.ylabel('Best Score')
+    plt.legend()
+    plt.grid(True)
+    plt.savefig(f"./img/{title}_best_each_iteration.png")
+    plt.yscale('log')
+    plt.legend()
+    plt.grid(True)
+    plt.savefig(f"./img/{title}_best_each_iteration_log.png")
     plt.close()
 
 

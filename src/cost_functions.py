@@ -29,16 +29,5 @@ def michalewicz(x):
     return -c
 
 
-def bonachevsky(x):
-    x1, x2 = x
-    return (
-        x1**2
-        + 2 * x2**2
-        - 0.3 * np.cos(3 * np.pi * x1)
-        - 0.4 * np.cos(4 * np.pi * x2)
-        + 0.7
-    )
-
-
 def eason(x):
     return -(np.cos(x[0])*np.cos(x[1]))*np.exp(-(x[0]-math.pi)**2-(x[1]-math.pi)**2)
